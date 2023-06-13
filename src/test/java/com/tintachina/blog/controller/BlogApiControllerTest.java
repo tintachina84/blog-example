@@ -75,4 +75,27 @@ class BlogApiControllerTest {
         assertThat(articles.get(0).getContent()).isEqualTo(content);
     }
 
+    @DisplayName("Find all articles.")
+    @Test
+    public void findAllArticles() throws Exception {
+        // given
+        final String url = "/api/articles";
+        final String title = "title";
+        final String content = "content";
+
+        this.blogRepository.save(Article.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        // when
+        final ResultActions resultActions = this.mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON_VALUE));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value(title))
+                .andExpect(jsonPath("$[0].content").value(content));
+    }
+
 }
