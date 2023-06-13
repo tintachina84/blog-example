@@ -144,4 +144,32 @@ class BlogApiControllerTest {
         assertThat(articles.size()).isEqualTo(0);
     }
 
+    @DisplayName("Update article by id.")
+    @Test
+    public void updateArticleById() throws Exception {
+        // given
+        final String url = "/api/articles/{id}";
+        final String title = "title";
+        final String content = "content";
+        final String updatedTitle = "updatedTitle";
+        final String updatedContent = "updatedContent";
+
+        Article savedArticle = this.blogRepository.save(Article.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        // when
+        final ResultActions resultActions = this.mockMvc.perform(put(url, savedArticle.getId())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(this.objectMapper.writeValueAsString(new AddArticleRequest(updatedTitle, updatedContent)))
+                .accept(MediaType.APPLICATION_JSON_VALUE));
+
+        // then
+        resultActions.andExpect(status().isOk());
+        Article article = this.blogRepository.findById(savedArticle.getId()).get();
+        assertThat(article.getTitle()).isEqualTo(updatedTitle);
+        assertThat(article.getContent()).isEqualTo(updatedContent);
+    }
+
 }

@@ -4,6 +4,7 @@ import com.tintachina.blog.domain.Article;
 import com.tintachina.blog.dto.AddArticleRequest;
 import com.tintachina.blog.mapper.ArticleMapper;
 import com.tintachina.blog.repository.BlogRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,14 @@ public class BlogService {
 
     public void deleteById(Long id) {
         this.blogRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Article update(Long id, AddArticleRequest addArticleRequest) {
+        Article article = this.blogRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid article Id:" + id));
+        article.update(addArticleRequest.getTitle(), addArticleRequest.getContent());
+
+        return article;
     }
 
 

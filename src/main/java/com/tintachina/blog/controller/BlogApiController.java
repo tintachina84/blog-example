@@ -44,4 +44,10 @@ public class BlogApiController {
         this.blogService.deleteById(id);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/api/articles/{id}")
+    public ResponseEntity<Article> updateArticleById(@PathVariable Long id, @RequestBody AddArticleRequest addArticleRequest) {
+        Article updatedArticle = this.blogService.update(id, addArticleRequest);
+        return ResponseEntity.ok().body(updatedArticle);
+    }
 }
