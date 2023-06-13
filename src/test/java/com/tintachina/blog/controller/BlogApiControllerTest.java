@@ -121,4 +121,27 @@ class BlogApiControllerTest {
                 .andExpect(jsonPath("$.content").value(content));
     }
 
+    @DisplayName("Delete article by id.")
+    @Test
+    public void deleteArticleById() throws Exception {
+        // given
+        final String url = "/api/articles/{id}";
+        final String title = "title";
+        final String content = "content";
+
+        Article savedArticle = this.blogRepository.save(Article.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        // when
+        final ResultActions resultActions = this.mockMvc.perform(delete(url, savedArticle.getId())
+                .accept(MediaType.APPLICATION_JSON_VALUE));
+
+        // then
+        resultActions.andExpect(status().isOk());
+        List<Article> articles = this.blogRepository.findAll();
+        assertThat(articles.size()).isEqualTo(0);
+    }
+
 }

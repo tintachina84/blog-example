@@ -30,5 +30,9 @@ public class BlogService {
         return this.blogRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid article Id:" + id));
     }
 
+    public void deleteById(Long id) {
+        this.blogRepository.deleteById(id);
+    }
+
 
 }
