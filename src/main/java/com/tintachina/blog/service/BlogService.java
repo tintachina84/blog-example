@@ -26,6 +26,9 @@ public class BlogService {
         return this.blogRepository.findAll();
     }
 
+    public Article findById(Long id) {
+        return this.blogRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid article Id:" + id));
+    }
 
 
 }
