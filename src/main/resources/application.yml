@@ -11,3 +11,7 @@ spring:
     h2:
         console:
             enabled: true
+
+jwt:
+    issuer: tintachina84@gmail.com
+    secret_key: blog-example
