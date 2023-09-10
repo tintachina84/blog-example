@@ -55,7 +55,8 @@ class BlogApiControllerTest {
         final String url = "/api/articles";
         final String title = "title";
         final String content = "content";
-        final AddArticleRequest userRequest = new AddArticleRequest(title, content);
+        final String author = "author";
+        final AddArticleRequest userRequest = new AddArticleRequest(title, content, author);
 
         // serialize json
         final String requestBody = this.objectMapper.writeValueAsString(userRequest);
@@ -151,6 +152,7 @@ class BlogApiControllerTest {
         final String url = "/api/articles/{id}";
         final String title = "title";
         final String content = "content";
+        final String author = "author";
         final String updatedTitle = "updatedTitle";
         final String updatedContent = "updatedContent";
 
@@ -162,7 +164,7 @@ class BlogApiControllerTest {
         // when
         final ResultActions resultActions = this.mockMvc.perform(put(url, savedArticle.getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(this.objectMapper.writeValueAsString(new AddArticleRequest(updatedTitle, updatedContent)))
+                .content(this.objectMapper.writeValueAsString(new AddArticleRequest(updatedTitle, updatedContent, author)))
                 .accept(MediaType.APPLICATION_JSON_VALUE));
 
         // then

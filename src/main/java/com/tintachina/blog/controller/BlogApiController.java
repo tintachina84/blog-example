@@ -3,12 +3,14 @@ package com.tintachina.blog.controller;
 import com.tintachina.blog.domain.Article;
 import com.tintachina.blog.dto.AddArticleRequest;
 import com.tintachina.blog.dto.ArticleResponse;
+import com.tintachina.blog.dto.UpdateArticleRequest;
 import com.tintachina.blog.service.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,36 +20,44 @@ public class BlogApiController {
     private final BlogService blogService;
 
     @PostMapping("/api/articles")
-    public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest addArticleRequest) {
-        Article savedArticle = this.blogService.save(addArticleRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
+    public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request, Principal principal) {
+        Article savedArticle = blogService.save(request, principal.getName());
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(savedArticle);
     }
 
     @GetMapping("/api/articles")
     public ResponseEntity<List<ArticleResponse>> findAllArticles() {
-        List<ArticleResponse> articles = this.blogService.findAll()
+        List<ArticleResponse> articles = blogService.findAll()
                 .stream()
                 .map(ArticleResponse::new)
                 .toList();
 
-        return ResponseEntity.ok().body(articles);
+        return ResponseEntity.ok()
+                .body(articles);
     }
-
     @GetMapping("/api/articles/{id}")
-    public ResponseEntity<ArticleResponse> findArticleById(@PathVariable Long id) {
-        ArticleResponse article = new ArticleResponse(this.blogService.findById(id));
-        return ResponseEntity.ok().body(article);
+    public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id) {
+        Article article = blogService.findById(id);
+
+        return ResponseEntity.ok()
+                .body(new ArticleResponse(article));
     }
 
     @DeleteMapping("/api/articles/{id}")
-    public ResponseEntity<Void> deleteArticleById(@PathVariable Long id) {
-        this.blogService.deleteById(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
+        blogService.delete(id);
+
+        return ResponseEntity.ok()
+                .build();
     }
 
     @PutMapping("/api/articles/{id}")
-    public ResponseEntity<Article> updateArticleById(@PathVariable Long id, @RequestBody AddArticleRequest addArticleRequest) {
-        Article updatedArticle = this.blogService.update(id, addArticleRequest);
-        return ResponseEntity.ok().body(updatedArticle);
+    public ResponseEntity<Article> updateArticle(@PathVariable long id, @RequestBody UpdateArticleRequest request) {
+        Article updatedArticle = blogService.update(id, request);
+
+        return ResponseEntity.ok()
+                .body(updatedArticle);
     }
 }
